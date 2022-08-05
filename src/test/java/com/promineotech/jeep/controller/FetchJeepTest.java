@@ -1,6 +1,8 @@
 package com.promineotech.jeep.controller;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import java.math.BigDecimal;
+import java.util.LinkedList;
 import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,6 +35,28 @@ class FetchJeepTest {
   @LocalServerPort
   private int serverPort;
 
+protected List<Jeep> buildExpected() {
+    
+    List<Jeep> list = new LinkedList<>();
+    
+    list.add(Jeep.builder()
+        .modelId(JeepModel.WRANGLER)
+        .trimLevel("Sport")
+        .numDoors(2)
+        .wheelSize(17)
+        .basePrice(new BigDecimal("28475.00"))
+        .build());
+    
+    list.add(Jeep.builder()
+        .modelId(JeepModel.WRANGLER)
+        .trimLevel("Sport")
+        .numDoors(4)
+        .wheelSize(17)
+        .basePrice(new BigDecimal("31975.00"))
+        .build());
+        
+    return list;
+  }
 
   @Test
   void testThatJeepsAreReturnedWhenAValidModelAndTrimAreSupplied() {
@@ -48,5 +72,9 @@ class FetchJeepTest {
     
     // Then a success (ok - 200) is returned
     assertThat(response.getStatusCode()).isEqualTo(HttpStatus.OK);
+    
+    // And the actual list returned is the same as the expected list
+    List<Jeep> expected = buildExpected(); 
+      assertThat(response.getBody()).isEqualTo(expected);
   }
 }
